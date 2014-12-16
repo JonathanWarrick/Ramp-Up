@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 - Data Driven Documents</title>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <style type="text/css">
+    body
+      {
+        padding-top: 50px;
+        padding-left: 100px;
+      }
+    .bar
+      {
+        display: inline-block;
+        width: 20px;
+        height: 75px; /* Gets overriden by D3-assigned height below */
+        margin-right: 2px;
+        fill: teal; /* Specific to SVG elements */
+      }
+  </style>
+</head>
+<body>
+  <div id="chartArea"></div>
+<script type="text/javascript">
+
+  var dataset = [5, 10, 15, 20, 25];
+  var multiplier = 5;
+  var svgWidth = 400;
+  var svgHeight = 300;
+  var barWidth = 20;
+
+  var svg = d3.select('#chartArea').append('svg')
+              .attr('width', svgWidth)
+              .attr('height', svgHeight);
+
+  var yScale = d3.scale.linear()
+                 .domain([0, 25])
+                 .range([0, svgHeight]);            
+
+  svg.selectAll('rect')
+    .data(dataset)
+    .enter()
+    .append('rect')
+    .attr('class', 'bar')
+    .attr('x', function(d, i) {
+      return i * (barWidth + 2);
+    })
+    .attr('y', function(d) {
+      return svgHeight - yScale(d);
+    })
+    .attr('width', barWidth)
+    .attr('height', function(d) {
+      return yScale(d);
+    }); 
+
+</script>
+</body>
+</html>

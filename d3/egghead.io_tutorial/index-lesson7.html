@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 - Data Driven Documents</title>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+  <style type="text/css">
+    body
+      {
+        padding-top: 50px;
+        padding-left: 100px;
+      }
+    .bar
+      {
+        display: inline-block;
+        width: 20px;
+        height: 75px; /* Gets overriden by D3-assigned height below */
+        margin-right: 2px;
+        /*fill: teal;  Specific to SVG elements */
+      }
+  </style>
+</head>
+<body>
+  <div id="chartArea"></div>
+<script type="text/javascript">
+
+  var dataset = _.map(_.range(50), function(i) {
+    return Math.random() * 50;
+  });
+
+  // constants
+  var multiplier = 5;
+  var svgWidth = 400;
+  var svgHeight = 300;
+  var barWidth = 20;
+
+  var svg = d3.select('#chartArea').append('svg')
+              .attr('width', svgWidth)
+              .attr('height', svgHeight);
+
+  var xScale = d3.scale.ordinal() // discrete domain which maps things based on order
+                 .domain(dataset)
+                 .rangeBands([0, svgWidth], 0.2, 0.1); // range, padding between, padding outside
+
+  var yScale = d3.scale.linear()
+                 .domain([0, d3.max(dataset) * 1.1])
+                 .range([0, svgHeight]);             
+
+  var colorScale = d3.scale.quantize() // divides our chart into buckets
+                 .domain([0, d3.max(dataset)])
+                 .range(['orange', 'purple', 'blue', 'black']);
+
+  var colorScale2 = d3.scale.quantile() // divides our chart into buckets
+                 .domain([0, dataset.length / 4, dataset.length]) // you can add as many break points as you'd like
+                 .range(['orange', 'purple', 'blue', 'black']);                                               
+
+  svg.selectAll('rect')
+    .data(dataset)
+    .enter()
+    .append('rect')
+    .attr('class', 'bar')
+    .attr('x', function(d, i) {
+      return xScale(d);
+    })
+    .attr('y', function(d) {
+      return svgHeight - yScale(d);
+    })
+    .attr('width', xScale.rangeBand())
+    .attr('height', function(d) {
+      return yScale(d);
+    })
+    .attr('fill', function(d, i) {
+      return colorScale2(i);
+    }); 
+
+</script>
+</body>
+</html>
